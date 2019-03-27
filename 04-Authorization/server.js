@@ -30,15 +30,22 @@ const checkJwt = jwt({
 const checkScopes = jwtAuthz([ 'read:messages' ]);
 const checkScopesAdmin = jwtAuthz([ 'write:messages' ]);
 
-app.get('/api/public', function(req, res) {
+const printReqHeaders = (req, res, next) => {
+  if (process.env.ENVIRONMENT === "dev") {
+    console.dir(req.headers);
+  }
+  next();
+};
+
+app.get('/api/public', printReqHeaders, function(req, res) {
   res.json({ message: "Hello from a public endpoint! You don't need to be authenticated to see this." });
 });
 
-app.get('/api/private', checkJwt, checkScopes, function(req, res) {
+app.get('/api/private', printReqHeaders, checkJwt, checkScopes, function(req, res) {
   res.json({ message: "Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this." });
 });
 
-app.post('/api/admin', checkJwt, checkScopesAdmin, function(req, res) {
+app.post('/api/admin', printReqHeaders, checkJwt, checkScopesAdmin, function(req, res) {
   res.json({ message: "Hello from an admin endpoint! You need to be authenticated and have a scope of write:messages to see this." });
 });
 

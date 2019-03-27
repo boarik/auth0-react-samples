@@ -1,25 +1,25 @@
 import auth0 from 'auth0-js';
-import { AUTH_CONFIG } from './auth0-variables';
 import history from '../history';
 
+const AUTH_CONFIG = {
+  domain: 'lt-ab-test.auth0.com',
+  clientID: 'IOL9ObVqxFYc07a9r5lnR989Iuf0RfpD',
+  redirectUri: 'http://localhost:3000/callback',
+  audience: 'http://localhost:3001',
+  responseType: 'token id_token',
+  scope: 'openid profile read:messages write:messages'
+}
+
 export default class Auth {
-  accessToken;
-  idToken;
-  expiresAt;
-  userProfile;
-  scopes;
-  requestedScopes = 'openid profile read:messages write:messages';
-
-  auth0 = new auth0.WebAuth({
-    domain: AUTH_CONFIG.domain,
-    clientID: AUTH_CONFIG.clientId,
-    redirectUri: AUTH_CONFIG.callbackUrl,
-    audience: AUTH_CONFIG.apiUrl,
-    responseType: 'token id_token',
-    scope: this.requestedScopes
-  });
-
+  
+  
   constructor() {
+    this.accessToken = null;
+    this.idToken = null;
+    this.expiresAt = 0;
+    this.userProfile = null;
+    this.scopes = 'openid profile read:messages write:messages';
+    this.auth0 = new auth0.WebAuth(AUTH_CONFIG);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.handleAuthentication = this.handleAuthentication.bind(this);
